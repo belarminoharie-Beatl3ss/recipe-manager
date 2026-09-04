@@ -8,6 +8,16 @@ export default function CategoryFilter({ activeFilter, onFilterChange }) {
           - The active button should look different from the others
             (e.g., "btn-primary" for active, "btn-outline" otherwise).
           - Don't forget the `key` prop! */}
+
+      <button
+        className={currentFilter === "all" ? "btn btn-primary" : "btn btn-ghost"}
+        onClick={() => onChangeFilter("all")}
+      >
+        Recipe
+      </button>
+
+
+
     </div>
   );
 }
