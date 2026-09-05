@@ -22,7 +22,6 @@ export default function App() {
 
     return saved ? JSON.parse(recipes) : initialrecipe;
   });
-  const [recipes, setRecipes] = useState(STARTER_RECIPES);
 
   // TODO 2: create the `filter` state, starting as "All".
   //         Later, wrap it in the lazy initializer that reads from localStorage.
@@ -30,7 +29,7 @@ export default function App() {
 
 
   const [filter, setFilter] = useState(() => {
-    return localStorage.getItem("filter") || "all";
+    return localStorage.getItem("filter") || "All";
 
   });
 

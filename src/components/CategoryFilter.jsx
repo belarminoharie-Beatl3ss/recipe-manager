@@ -9,15 +9,15 @@ export default function CategoryFilter({ activeFilter, onFilterChange }) {
             (e.g., "btn-primary" for active, "btn-outline" otherwise).
           - Don't forget the `key` prop! */}
 
-      <button
-        className={currentFilter === "all" ? "btn btn-primary" : "btn btn-ghost"}
-        onClick={() => onChangeFilter("all")}
-      >
-        Recipe
-      </button>
-
-
-
+      {FILTERS.map((f) => (
+        <button
+          key={f}
+          className={activeFilter === f ? "btn btn-primary" : "btn btn-outline"}
+          onClick={() => onFilterChange(f)}
+        >
+          {f}
+        </button>
+      ))}
     </div>
   );
 }
