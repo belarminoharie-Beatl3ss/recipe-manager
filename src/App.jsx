@@ -64,8 +64,18 @@ export default function App() {
 
 
   // TODO 7: write handleToggleFavorite(id) — flips the `favorite` field of the matching recipe.
-  //         Use .map() and spread; do NOT mutate the object directly.
-
+  //          Use .map() and spread; do NOT mutate the object directly.
+    const handleToggleFavorite = (id) => {
+      setRecipes((oldRecipes) => {
+        return oldRecipes.map((recipe) => {
+          if (recipe.id === id) {
+            return { ...recipe, favorite: !recipe.favorite };
+          } else {
+            return recipe;
+          }
+        });
+      });
+    };
 
 
   // TODO 8: write handleDelete(id) — removes the recipe with that id.
