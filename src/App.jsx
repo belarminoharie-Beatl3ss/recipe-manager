@@ -20,7 +20,7 @@ export default function App() {
   const [recipes, setRecipes] = useState(() => {
     const savedrecipes = localStorage.getItem("recipes");
 
-    return saved ? JSON.parse(recipes) : initialrecipe;
+    return savedrecipes ? JSON.parse(savedrecipes) : STARTER_RECIPES;
   });
 
   // TODO 2: create the `filter` state, starting as "All".
@@ -47,12 +47,20 @@ export default function App() {
 
   // TODO 5: add useEffect to update `document.title` with the favorite count.
   //         Example format: `Recipes · 3 ★`
-
+    useEffect(() => {
+      const favoriteCount = recipes.filter((recipe) => recipe.favorite).length;
+      document.title = `Recipes · ${favoriteCount} ★`;
+    }, [recipes]);
 
 
   // TODO 6: write handleAdd(recipe) — adds a new recipe with a unique id (Date.now()).
   //         Use the spread operator, NOT .push().
-
+    const handleAdd = (recipe) => {
+      setRecipes((oldRecipes) => [
+        ...oldRecipes,
+        { ...recipe, id: Date.now(), favorite: false },
+      ]);
+    }
 
 
   // TODO 7: write handleToggleFavorite(id) — flips the `favorite` field of the matching recipe.
