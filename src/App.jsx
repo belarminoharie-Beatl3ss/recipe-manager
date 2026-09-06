@@ -80,13 +80,19 @@ export default function App() {
 
   // TODO 8: write handleDelete(id) — removes the recipe with that id.
   //         Use .filter().
-
+    const handleDelete = (id) => {
+    setRecipes((oldRecipes) => {
+      return oldRecipes.filter((recipe) => recipe.id !== id);
+    });
+  };
 
 
   // TODO 9: derive `visibleRecipes` in render — if filter === "All" show all,
   //         otherwise filter by category. Do NOT store this in state.
-
-
+  const visibleRecipes =
+  filter === "All"
+    ? recipes
+    : recipes.filter((recipe) => recipe.category === filter);
 
   return (
     <div className="min-h-screen bg-base-200 py-8 px-4">
@@ -98,22 +104,19 @@ export default function App() {
           </p>
         </header>
 
-        {/* TODO: render <RecipeForm onAdd={handleAdd} /> */}
+        <RecipeForm onAdd={handleAdd} />
 
-        {/* TODO: render <SummaryBar total={...} favorites={...} /> */}
+        <SummaryBar
+          total={recipes.length}
+          favorites={recipes.filter((recipe) => recipe.favorite).length}
+        />
 
-        {/* TODO: render <CategoryFilter activeFilter={filter} onFilterChange={setFilter} /> */}
+        <CategoryFilter activeFilter={filter} onFilterChange={setFilter} /> 
 
-        {/* TODO: render <RecipeList recipes={visibleRecipes}
+        <RecipeList recipes={visibleRecipes}
                                     onToggleFavorite={handleToggleFavorite}
-                                    onDelete={handleDelete} /> */}
+                                    onDelete={handleDelete} /> 
 
-        <div className="alert alert-info">
-          <span>
-            Delete this alert once you have wired up your components. Then run{" "}
-            <code className="font-mono">npm run dev</code> and check the browser.
-          </span>
-        </div>
       </div>
     </div>
   );
