@@ -1,73 +1,220 @@
-# Recipe Manager — Starter Template
+# Recipe Manager — Data-Driven Recipe App
 
-Starter scaffold for **PD 2 Major Assessment 1 — Interactive Recipe Manager**. Vite, React 19, Tailwind CSS, and DaisyUI are all pre-installed and configured. Your job is to fill in the TODO comments across `src/App.jsx` and `src/components/`.
+A data-driven recipe management application built with **React, TypeScript, Vite, TanStack Query, Axios, Tailwind CSS, DaisyUI, and json-server**.
 
----
+The application lets users search for meals from TheMealDB, save recipes locally through a REST API, organize saved recipes by category, manage recipe details, and mark favorites.
+
+## Features
+
+- **Meal Search:** Search for meals using TheMealDB's public API.
+- **Category List:** Retrieve available meal categories.
+- **Save Recipes:** Save meals to the local recipe database.
+- **Saved Recipes:** Display and manage saved recipes.
+- **Category Filtering:** Filter saved recipes by category.
+- **Edit Recipes:** Update preparation time and personal notes.
+- **Delete Recipes:** Remove saved recipes.
+- **Favorite Recipes:** Mark and unmark recipes as favorites.
+- **Optimistic Updates:** Update favorite status immediately while the server request is processing, with rollback if the request fails.
+- **Loading and Error States:** Display appropriate feedback during data requests.
+
+## Technologies Used
+
+- React 19
+- TypeScript
+- Vite
+- TanStack Query
+- Axios
+- Tailwind CSS
+- DaisyUI
+- json-server 0.17.4
+- TheMealDB API
+
+## Requirements
+
+Before running the project, install:
+
+- Node.js and npm
+- Git
 
 ## Getting Started
 
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/belarminoharie-Beatl3ss/recipe-manager.git
+cd recipe-manager
+```
+
+### 2. Install dependencies
+
 ```bash
 npm install
+```
+
+### 3. Configure environment variables
+
+Copy the example environment file:
+
+**Windows CMD:**
+```cmd
+copy .env.example .env
+```
+
+The `.env` file should contain:
+
+```env
+VITE_MEALDB_URL=https://www.themealdb.com/api/json/v1/1
+VITE_API_URL=http://localhost:3001
+```
+
+The `.env` file is excluded from Git. The committed `.env.example` provides the required configuration for other users.
+
+### 4. Start the local API server
+
+Open a terminal in the project directory and run:
+
+```bash
+npm run api
+```
+
+The json-server API will run at:
+
+```text
+http://localhost:3001
+```
+
+The API uses `db.json` as its database and has an 800 ms response delay.
+
+### 5. Start the development server
+
+Open a second terminal in the same project directory and run:
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). You should see the "Recipe Manager" header and an info alert. Once you wire up your components, the alert can be deleted.
+Open the local address shown by Vite, usually:
 
----
+```text
+http://localhost:5173
+```
 
-## Where to Work
+Keep both terminals running while using the application.
 
-| File | Your Job |
-|------|----------|
-| `src/App.jsx` | Own all state (`recipes`, `filter`), add all `useEffect`s, define handlers, and render the four child components. |
-| `src/components/RecipeForm.jsx` | Controlled form for adding a new recipe. Empty-title guard. |
-| `src/components/CategoryFilter.jsx` | 5 filter buttons (All / Breakfast / Lunch / Dinner / Dessert). |
-| `src/components/RecipeList.jsx` | Maps over recipes → renders `<RecipeCard />`. Empty state. |
-| `src/components/RecipeCard.jsx` | Title, category, time, ★ favorite toggle, Delete button. |
-| `src/components/SummaryBar.jsx` | Two-stat display: total count and favorite count. |
+## Production Build
 
-Each file has TODO comments explaining what to build.
+To check TypeScript and generate the production build, run:
 
----
+```bash
+npm run build
+```
 
-## TODO Order (Recommended)
+The generated production files are placed in the `dist` directory.
 
-Work through the TODOs in this order so you can see progress in the browser after each step.
+## Project Structure
 
-1. **RecipeCard** — hardcode a dummy recipe first to render one card and check the styling.
-2. **RecipeList** — map over the starter recipes and render six cards.
-3. **App: recipes state + handleDelete** — wire delete to see state updates in action.
-4. **RecipeForm** — controlled inputs + `handleAdd`.
-5. **App: handleToggleFavorite** — star button works.
-6. **CategoryFilter + App: filter state** — category filter works.
-7. **SummaryBar** — plug in `total` and `favorites` counts.
-8. **App: three `useEffect`s** — persist recipes, persist filter, sync tab title.
+```text
+recipe-manager/
+├── db.json
+├── .env.example
+├── .gitignore
+├── package.json
+├── vite.config.ts
+├── src/
+│   ├── components/
+│   │   ├── CategoryFilter.tsx
+│   │   ├── EditRecipeForm.tsx
+│   │   ├── MealCard.tsx
+│   │   ├── RecipeList.tsx
+│   │   ├── SearchBar.tsx
+│   │   └── SummaryBar.tsx
+│   ├── features/
+│   │   ├── meals/
+│   │   │   ├── meals.api.ts
+│   │   │   ├── meals.hooks.ts
+│   │   │   └── meals.types.ts
+│   │   └── recipes/
+│   │       ├── recipes.api.ts
+│   │       ├── recipes.hooks.ts
+│   │       └── recipes.types.ts
+│   ├── lib/
+│   │   └── api.ts
+│   ├── App.tsx
+│   └── index.css
+└── README.md
+```
 
-Once step 8 works, refresh the page — nothing should reset.
+## TanStack Query Keys
 
----
+The application uses query keys to identify and manage cached server data.
 
-## What's Already Installed
+### Meal search
 
-- **React 19** with the Vite plugin
-- **Tailwind CSS 3** — `src/index.css` already imports the three layers
-- **DaisyUI 4** — configured with the `light` theme in `tailwind.config.js`
+```ts
+queryKey: ["meals", term]
+```
 
-You should NOT need to install anything else for this assessment.
+The search term is included in the query key. This keeps the cached results for different searches separate.
 
----
+For example, searching for `chicken` and `pasta` creates different query keys:
 
-## Definition of Done
+```ts
+["meals", "chicken"]
+["meals", "pasta"]
+```
 
-Refer to the **Requirements Checklist** in the assessment handout. Every box must be ticked before submission.
+### Saved recipes
 
----
+```ts
+queryKey: ["recipes"]
+```
 
-## Submission Reminder
+This identifies the saved recipes returned by the local json-server API. Mutations invalidate this query when the saved recipe data needs to be refreshed.
 
-1. Push to a **public** GitHub repo named `recipe-manager`.
-2. Invite **`jeffdteach`** as a collaborator.
-3. Aim for **at least 5 meaningful commits** across the work — not one giant "final" commit.
-4. Submit the repo URL through the class submission channel.
+### Categories
 
-Good luck!
+```ts
+queryKey: ["categories"]
+```
+
+This identifies the categories retrieved from TheMealDB.
+
+## Optimistic Favorite Update and Rollback Test
+
+Favorite updates use an optimistic update strategy.
+
+1. Cancel ongoing queries for the saved recipes.
+2. Store a snapshot of the previous cached recipes.
+3. Update the selected recipe's favorite status immediately.
+4. If the server request fails, restore the previous cached data.
+5. Invalidate the saved recipes query after the request settles.
+
+**Rollback test screenshot:** Add the screenshot captured during the failed-request test to the repository, preferably at:
+
+```text
+docs/optimistic-rollback.png
+```
+
+Once the screenshot has been added, it can be displayed here:
+
+```md
+![Optimistic favorite rollback test](docs/optimistic-rollback.png)
+```
+
+## Sample Data
+
+The project includes four sample saved recipes in `db.json`:
+
+- Brown Stew Chicken
+- Corba
+- Beef and Mustard Pie
+- Lasagne
+
+The local API stores recipe data in `db.json`.
+
+## Submission
+
+- Repository: [recipe-manager](https://github.com/belarminoharie-Beatl3ss/recipe-manager)
+- Branch: `main`
+- Required collaborator: `jeffdteach`
+- Repository visibility: Public
