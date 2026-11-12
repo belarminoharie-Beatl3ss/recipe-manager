@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useSearchMeals, useCategories } from "@/features/meals/meals.hooks";
 import { useSavedRecipes } from "@/features/recipes/recipes.hooks";
@@ -14,9 +15,10 @@ export default function App() {
   const [filter, setFilter] = useState("All");
   const [editing, setEditing] = useState<SavedRecipe | null>(null);
 
-  // Every fetch lives behind a hook (Lab 11). Components never see axios.
+  // Fetch data through the custom hooks.
   const search = useSearchMeals(term);
   const categories = useCategories();
+
   const {
     query: savedQuery,
     saved,
@@ -30,11 +32,11 @@ export default function App() {
 
   const results = search.data ?? [];
 
-  // TODO 13 — Derive, do not store.
-  //
-  // Filter `saved` by the active category here in render. Do not add a
-  // useState for the filtered list and do not add a useEffect to sync it.
-  const visible = saved;
+  // Derive the visible recipes from the saved recipes and active category.
+  const visible =
+    filter === "All"
+      ? saved
+      : saved.filter((recipe) => recipe.category === filter);
 
   return (
     <div className="min-h-screen bg-base-200 py-8 px-4">
@@ -45,13 +47,6 @@ export default function App() {
             Search TheMealDB · save what you like · add your own notes
           </p>
         </header>
-
-        <div className="alert alert-info">
-          <span>
-            Starter template. The saved list and Delete already work — everything
-            else is a TODO. Delete this alert before you submit.
-          </span>
-        </div>
 
         <SearchBar onSearch={setTerm} />
 
@@ -82,7 +77,10 @@ export default function App() {
                   meal={meal}
                   onSave={create.mutate}
                   isSaved={savedMealIds.has(meal.mealId)}
-                  isSaving={create.isPending && create.variables?.mealId === meal.mealId}
+                  isSaving={
+                    create.isPending &&
+                    create.variables?.mealId === meal.mealId
+                  }
                 />
               ))}
             </div>
