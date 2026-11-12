@@ -53,9 +53,10 @@ npm install
 
 ### 3. Configure environment variables
 
-Copy the example environment file:
+Copy the example environment file.
 
 **Windows CMD:**
+
 ```cmd
 copy .env.example .env
 ```
@@ -115,33 +116,35 @@ The generated production files are placed in the `dist` directory.
 
 ```text
 recipe-manager/
-├── db.json
-├── .env.example
-├── .gitignore
-├── package.json
-├── vite.config.ts
-├── src/
-│   ├── components/
-│   │   ├── CategoryFilter.tsx
-│   │   ├── EditRecipeForm.tsx
-│   │   ├── MealCard.tsx
-│   │   ├── RecipeList.tsx
-│   │   ├── SearchBar.tsx
-│   │   └── SummaryBar.tsx
-│   ├── features/
-│   │   ├── meals/
-│   │   │   ├── meals.api.ts
-│   │   │   ├── meals.hooks.ts
-│   │   │   └── meals.types.ts
-│   │   └── recipes/
-│   │       ├── recipes.api.ts
-│   │       ├── recipes.hooks.ts
-│   │       └── recipes.types.ts
-│   ├── lib/
-│   │   └── api.ts
-│   ├── App.tsx
-│   └── index.css
-└── README.md
+|-- db.json
+|-- .env.example
+|-- .gitignore
+|-- package.json
+|-- vite.config.ts
+|-- docs/
+|   |-- optimistic-rollback.png
+|-- src/
+|   |-- components/
+|   |   |-- CategoryFilter.tsx
+|   |   |-- EditRecipeForm.tsx
+|   |   |-- MealCard.tsx
+|   |   |-- RecipeList.tsx
+|   |   |-- SearchBar.tsx
+|   |   |-- SummaryBar.tsx
+|   |-- features/
+|   |   |-- meals/
+|   |   |   |-- meals.api.ts
+|   |   |   |-- meals.hooks.ts
+|   |   |   |-- meals.types.ts
+|   |   |-- recipes/
+|   |       |-- recipes.api.ts
+|   |       |-- recipes.hooks.ts
+|   |       |-- recipes.types.ts
+|   |-- lib/
+|   |   |-- api.ts
+|   |-- App.tsx
+|   |-- index.css
+|-- README.md
 ```
 
 ## TanStack Query Keys
@@ -156,7 +159,7 @@ queryKey: ["meals", term]
 
 The search term is included in the query key. This keeps the cached results for different searches separate.
 
-For example, searching for `chicken` and `pasta` creates different query keys:
+For example:
 
 ```ts
 ["meals", "chicken"]
@@ -189,17 +192,11 @@ Favorite updates use an optimistic update strategy.
 4. If the server request fails, restore the previous cached data.
 5. Invalidate the saved recipes query after the request settles.
 
-**Rollback test screenshot:** Add the screenshot captured during the failed-request test to the repository, preferably at:
+### Rollback Test Screenshot
 
-```text
-docs/optimistic-rollback.png
-```
+The screenshot below shows the optimistic favorite update during the failed-request test. The application restores the original favorite state when the request fails.
 
-Once the screenshot has been added, it can be displayed here:
-
-```md
 ![Optimistic favorite rollback test](docs/optimistic-rollback.png)
-```
 
 ## Sample Data
 
