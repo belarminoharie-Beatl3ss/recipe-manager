@@ -1,3 +1,5 @@
+
+import { Link } from "react-router-dom";
 import type { SavedRecipe } from "@/features/recipes/recipes.types";
 
 interface RecipeCardProps {
@@ -15,7 +17,16 @@ export default function RecipeCard({
   onDelete,
   isDeleting,
 }: RecipeCardProps) {
-  const { id, title, category, thumb, time, notes, favorite } = recipe;
+  const {
+    mealId,
+    id,
+    title,
+    category,
+    thumb,
+    time,
+    notes,
+    favorite,
+  } = recipe;
 
   return (
     <div className="card bg-base-100 shadow">
@@ -23,13 +34,31 @@ export default function RecipeCard({
         <div className="flex justify-between items-start gap-3">
           <div className="flex gap-3 items-start">
             {thumb && (
-              <img src={thumb} alt={title} className="w-16 h-16 rounded object-cover" />
+              <img
+                src={thumb}
+                alt={title}
+                className="w-16 h-16 rounded object-cover"
+              />
             )}
+
             <div>
-              <h2 className="card-title text-base">{title}</h2>
+              <h2 className="card-title text-base">
+                <Link
+                  to={`/recipe/${mealId}`}
+                  className="link link-hover"
+                >
+                  {title}
+                </Link>
+              </h2>
+
               <div className="flex gap-2 mt-1">
-                <span className="badge badge-primary badge-sm">{category}</span>
-                <span className="badge badge-ghost badge-sm">{time} min</span>
+                <span className="badge badge-primary badge-sm">
+                  {category}
+                </span>
+
+                <span className="badge badge-ghost badge-sm">
+                  {time} min
+                </span>
               </div>
             </div>
           </div>
@@ -43,12 +72,20 @@ export default function RecipeCard({
           </button>
         </div>
 
-        {notes && <p className="text-sm text-base-content/70 mt-2 italic">{notes}</p>}
+        {notes && (
+          <p className="text-sm text-base-content/70 mt-2 italic">
+            {notes}
+          </p>
+        )}
 
         <div className="card-actions justify-end mt-3">
-          <button className="btn btn-sm btn-outline" onClick={() => onEdit(recipe)}>
+          <button
+            className="btn btn-sm btn-outline"
+            onClick={() => onEdit(recipe)}
+          >
             Edit
           </button>
+
           <button
             className="btn btn-sm btn-error"
             onClick={() => onDelete(id)}
