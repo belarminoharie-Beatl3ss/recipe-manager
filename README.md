@@ -1,33 +1,42 @@
-# Recipe Manager — Data-Driven Recipe App
 
-A data-driven recipe management application built with **React, TypeScript, Vite, TanStack Query, Axios, Tailwind CSS, DaisyUI, and json-server**.
+# Recipe Manager — Multi-Page Recipe App
 
-The application lets users search for meals from TheMealDB, save recipes locally through a REST API, organize saved recipes by category, manage recipe details, and mark favorites.
+A multi-page recipe management application built with **React, TypeScript, Vite, React Router, TanStack Query, Axios, Tailwind CSS, and DaisyUI**.
+
+Users can search for meals from TheMealDB, view recipe details, sign in, and manage their saved recipes using browser localStorage.
+
+## Live Demo
+
+**Deployed Application:**  
+https://recipe-manager-fwa3yak39-belarminoharie-beatl3ss.vercel.app/
 
 ## Features
 
-- **Meal Search:** Search for meals using TheMealDB's public API.
-- **Category List:** Retrieve available meal categories.
-- **Save Recipes:** Save meals to the local recipe database.
-- **Saved Recipes:** Display and manage saved recipes.
+- **Meal Search:** Search for meals using TheMealDB public API.
+- **Recipe Details:** View individual recipes and their ingredients.
+- **User Authentication:** Sign in and maintain login state using localStorage.
+- **Protected Routes:** Require authentication before accessing saved recipes.
+- **Save Recipes:** Save recipes locally in the browser.
+- **Saved Recipes:** View and manage saved recipes.
 - **Category Filtering:** Filter saved recipes by category.
 - **Edit Recipes:** Update preparation time and personal notes.
 - **Delete Recipes:** Remove saved recipes.
 - **Favorite Recipes:** Mark and unmark recipes as favorites.
-- **Optimistic Updates:** Update favorite status immediately while the server request is processing, with rollback if the request fails.
-- **Loading and Error States:** Display appropriate feedback during data requests.
+- **Loading and Error States:** Display feedback during data requests.
+- **Responsive Interface:** Styled with Tailwind CSS and DaisyUI.
 
 ## Technologies Used
 
 - React 19
 - TypeScript
 - Vite
+- React Router DOM
 - TanStack Query
 - Axios
 - Tailwind CSS
 - DaisyUI
-- json-server 0.17.4
 - TheMealDB API
+- Vercel
 
 ## Requirements
 
@@ -55,40 +64,21 @@ npm install
 
 Copy the example environment file.
 
-**Windows CMD:**
+**Windows PowerShell:**
 
-```cmd
-copy .env.example .env
+```powershell
+Copy-Item .env.example .env
 ```
 
 The `.env` file should contain:
 
 ```env
 VITE_MEALDB_URL=https://www.themealdb.com/api/json/v1/1
-VITE_API_URL=http://localhost:3001
 ```
 
-The `.env` file is excluded from Git. The committed `.env.example` provides the required configuration for other users.
+The `.env` file is excluded from Git. The committed `.env.example` provides the required configuration.
 
-### 4. Start the local API server
-
-Open a terminal in the project directory and run:
-
-```bash
-npm run api
-```
-
-The json-server API will run at:
-
-```text
-http://localhost:3001
-```
-
-The API uses `db.json` as its database and has an 800 ms response delay.
-
-### 5. Start the development server
-
-Open a second terminal in the same project directory and run:
+### 4. Start the development server
 
 ```bash
 npm run dev
@@ -100,8 +90,6 @@ Open the local address shown by Vite, usually:
 http://localhost:5173
 ```
 
-Keep both terminals running while using the application.
-
 ## Production Build
 
 To check TypeScript and generate the production build, run:
@@ -112,106 +100,41 @@ npm run build
 
 The generated production files are placed in the `dist` directory.
 
-## Project Structure
+To preview the production build locally:
 
-```text
-recipe-manager/
-|-- db.json
-|-- .env.example
-|-- .gitignore
-|-- package.json
-|-- vite.config.ts
-|-- docs/
-|   |-- optimistic-rollback.png
-|-- src/
-|   |-- components/
-|   |   |-- CategoryFilter.tsx
-|   |   |-- EditRecipeForm.tsx
-|   |   |-- MealCard.tsx
-|   |   |-- RecipeList.tsx
-|   |   |-- SearchBar.tsx
-|   |   |-- SummaryBar.tsx
-|   |-- features/
-|   |   |-- meals/
-|   |   |   |-- meals.api.ts
-|   |   |   |-- meals.hooks.ts
-|   |   |   |-- meals.types.ts
-|   |   |-- recipes/
-|   |       |-- recipes.api.ts
-|   |       |-- recipes.hooks.ts
-|   |       |-- recipes.types.ts
-|   |-- lib/
-|   |   |-- api.ts
-|   |-- App.tsx
-|   |-- index.css
-|-- README.md
+```bash
+npm run preview
 ```
 
-## TanStack Query Keys
+## Authentication
 
-The application uses query keys to identify and manage cached server data.
+The application uses a simple name-based login system.
 
-### Meal search
+- User login information is stored in browser localStorage.
+- The authentication context provides login and logout functionality.
+- Protected routes redirect unauthenticated users to the login page.
 
-```ts
-queryKey: ["meals", term]
+## Data Storage
+
+Saved recipes and authentication information are stored in browser localStorage.
+
+The application uses TheMealDB API to retrieve meal information and categories.
+
+## Deployment
+
+The application is deployed using Vercel.
+
+The `vercel.json` configuration provides SPA rewrites so React Router routes work when users directly visit or refresh nested URLs.
+
+The following environment variable must be configured in Vercel:
+
+```env
+VITE_MEALDB_URL=https://www.themealdb.com/api/json/v1/1
 ```
-
-The search term is included in the query key. This keeps the cached results for different searches separate.
-
-For example:
-
-```ts
-["meals", "chicken"]
-["meals", "pasta"]
-```
-
-### Saved recipes
-
-```ts
-queryKey: ["recipes"]
-```
-
-This identifies the saved recipes returned by the local json-server API. Mutations invalidate this query when the saved recipe data needs to be refreshed.
-
-### Categories
-
-```ts
-queryKey: ["categories"]
-```
-
-This identifies the categories retrieved from TheMealDB.
-
-## Optimistic Favorite Update and Rollback Test
-
-Favorite updates use an optimistic update strategy.
-
-1. Cancel ongoing queries for the saved recipes.
-2. Store a snapshot of the previous cached recipes.
-3. Update the selected recipe's favorite status immediately.
-4. If the server request fails, restore the previous cached data.
-5. Invalidate the saved recipes query after the request settles.
-
-### Rollback Test Screenshot
-
-The screenshot below shows the optimistic favorite update during the failed-request test. The application restores the original favorite state when the request fails.
-
-![Optimistic favorite rollback test](docs/optimistic-rollback.png)
-
-## Sample Data
-
-The project includes four sample saved recipes in `db.json`:
-
-- Brown Stew Chicken
-- Corba
-- Beef and Mustard Pie
-- Lasagne
-
-The local API stores recipe data in `db.json`.
 
 ## Submission
 
-- Repository: [recipe-manager](https://github.com/belarminoharie-Beatl3ss/recipe-manager)
-- Branch: `main`
-- Required collaborator: `jeffdteach`
-- Repository visibility: Public
+- **Repository:** [recipe-manager](https://github.com/belarminoharie-Beatl3ss/recipe-manager)
+- **Branch:** `main`
+- **Repository Visibility:** Public
+- **Live Application:** https://recipe-manager-fwa3yak39-belarminoharie-beatl3ss.vercel.app/
