@@ -1,3 +1,4 @@
+
 {
   "recipes": [
     {
@@ -6,6 +7,7 @@
       "title": "Brown Stew Chicken",
       "category": "Chicken",
       "thumb": "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
+      "ingredients": ["Chicken", "Onion", "Tomato", "Garlic"],
       "time": 45,
       "notes": "",
       "favorite": false
@@ -16,8 +18,31 @@
       "title": "Corba",
       "category": "Side",
       "thumb": "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
+      "ingredients": ["Lentils", "Onion", "Carrot", "Tomato"],
       "time": 30,
       "notes": "Halve the lemon next time.",
+      "favorite": true
+    },
+    {
+      "id": 3,
+      "mealId": "52874",
+      "title": "Beef and Mustard Pie",
+      "category": "Beef",
+      "thumb": "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg",
+      "ingredients": ["Beef", "Mustard", "Flour", "Butter"],
+      "time": 60,
+      "notes": "Try adding more mustard.",
+      "favorite": false
+    },
+    {
+      "id": 4,
+      "mealId": "52844",
+      "title": "Lasagne",
+      "category": "Pasta",
+      "thumb": "https://www.themealdb.com/images/media/meals/wtsvxx1511296896.jpg",
+      "ingredients": ["Lasagne sheets", "Beef", "Tomato", "Cheese"],
+      "time": 50,
+      "notes": "Family favorite.",
       "favorite": true
     }
   ]
