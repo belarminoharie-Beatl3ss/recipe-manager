@@ -1,33 +1,38 @@
+﻿import type { SavedRecipe, NewRecipe, RecipePatch } from "./recipes.types";
 
-import { api } from "@/lib/api";
-import type { SavedRecipe, NewRecipe, RecipePatch } from "./recipes.types";
+const KEY = "saved-recipes";
 
-// Read all saved recipes.
-export const getRecipes = async (): Promise<SavedRecipe[]> =>
-  (await api.get<SavedRecipe[]>("/recipes")).data;
-
-// Delete a recipe.
-export const deleteRecipe = async (id: number): Promise<{ id: number }> => {
-  await api.delete(`/recipes/${id}`);
-  return { id };
+const read = (): SavedRecipe[] => {
+  try {
+    return JSON.parse(localStorage.getItem(KEY) ?? "[]") as SavedRecipe[];
+  } catch {
+    return [];
+  }
 };
 
-// Create a new recipe.
+const write = (rows: SavedRecipe[]) =>
+  localStorage.setItem(KEY, JSON.stringify(rows));
+
+export const getRecipes = async (): Promise<SavedRecipe[]> => read();
+
 export const createRecipe = async (
   recipe: NewRecipe
 ): Promise<SavedRecipe> => {
-  const { data } = await api.post<SavedRecipe>("/recipes", recipe);
-  return data;
+  const row: SavedRecipe = { ...recipe, id: crypto.randomUUID() };
+  write([...read(), row]);
+  return row;
 };
 
-// Update part of an existing recipe.
 export const updateRecipe = async ({
   id,
   ...patch
 }: RecipePatch): Promise<SavedRecipe> => {
-  const { data } = await api.patch<SavedRecipe>(
-    `/recipes/${id}`,
-    patch
-  );
-  return data;
+  const rows = read().map((r) => (r.id === id ? { ...r, ...patch } : r));
+  write(rows);
+  return rows.find((r) => r.id === id)!;
+};
+
+export const deleteRecipe = async (id: string): Promise<{ id: string }> => {
+  write(read().filter((r) => r.id !== id));
+  return { id };
 };
