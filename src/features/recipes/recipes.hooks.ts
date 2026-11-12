@@ -46,9 +46,40 @@ export function useSavedRecipes() {
     onSuccess: invalidate,
   });
 
-  // Favorite toggle (optimistic update will be implemented later).
+  // Optimistic favorite update.
   const favorite = useMutation({
     mutationFn: updateRecipe,
+
+    // Update the cache before the server responds.
+    onMutate: async ({ id, favorite: newFavorite }) => {
+      // Cancel ongoing requests.
+      await queryClient.cancelQueries({ queryKey: KEY });
+
+      // Save the previous data for rollback.
+      const previous = queryClient.getQueryData<SavedRecipe[]>(KEY);
+
+      // Update the matching recipe immediately.
+      queryClient.setQueryData<SavedRecipe[]>(
+        KEY,
+        (old = []) =>
+          old.map((recipe) =>
+            recipe.id === id
+              ? { ...recipe, favorite: newFavorite }
+              : recipe
+          )
+      );
+
+      return { previous };
+    },
+
+    // Restore the old data if the request fails.
+    onError: (_error, _variables, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(KEY, context.previous);
+      }
+    },
+
+    // Refresh the cache after success or failure.
     onSettled: invalidate,
   });
 
