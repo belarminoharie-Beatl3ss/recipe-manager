@@ -52,19 +52,21 @@ export function useSavedRecipes() {
 
     // Update the cache before the server responds.
     onMutate: async ({ id, favorite: newFavorite }) => {
-      // Cancel ongoing requests.
       await queryClient.cancelQueries({ queryKey: KEY });
 
       // Save the previous data for rollback.
       const previous = queryClient.getQueryData<SavedRecipe[]>(KEY);
 
+      // Ensure the favorite value is always a boolean.
+      const favoriteValue = Boolean(newFavorite);
+
       // Update the matching recipe immediately.
       queryClient.setQueryData<SavedRecipe[]>(
         KEY,
-        (old = []) =>
-          old.map((recipe) =>
+        (old) =>
+          old?.map((recipe) =>
             recipe.id === id
-              ? { ...recipe, favorite: newFavorite }
+              ? { ...recipe, favorite: favoriteValue }
               : recipe
           )
       );
