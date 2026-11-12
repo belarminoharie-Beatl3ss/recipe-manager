@@ -42,3 +42,14 @@ export async function getCategories(): Promise<string[]> {
     (category) => category.strCategory
   );
 }
+
+// Retrieve one meal by its TheMealDB ID.
+export async function getMealById(id: string): Promise<Recipe | null> {
+  const { data } = await mealdb.get<SearchResponse>("/lookup.php", {
+    params: { i: id },
+  });
+
+  const meal = data.meals?.[0];
+
+  return meal ? toRecipe(meal) : null;
+}
